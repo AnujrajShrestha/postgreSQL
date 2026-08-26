@@ -1,0 +1,122 @@
+PostgreSQL 
+
+ basic CRUD opreations:
+
+ CREATE DATABASE students;
+
+ CREATE TABLE students(
+    id INT PRIMARY LEY,
+    name VARCHAR(50),
+    age SMALLINT,
+    class SMALLINT
+ );
+
+ INSERT INTO students (id,name,age,class) VALUES (1,'Anuj',19,12),(2,'Aastha',23,15);
+
+ SELECT * FROM students;
+
+ update students SET age= 24 whrer name= 'Aastha';
+
+ DELETE from students where name= 'Anuj';
+
+
+## PostgreSQL Data Types
+
+| Data Type | Description | Example |
+|---|---|---|
+| `SMALLINT` | Integer with a smaller range; useful for small numbers such as age or class. | `age SMALLINT` |
+| `INT` / `INTEGER` | Standard integer type for whole numbers. | `id INT` |
+| `BIGINT` | Integer type for very large whole numbers. | `population BIGINT` |
+| `NUMERIC(p,s)` | Exact numeric type; useful when precision is important, such as money. `p` = total digits, `s` = digits after decimal. | `price NUMERIC(10,2)` |
+| `REAL` | Single-precision floating-point number. | `temperature REAL` |
+| `DOUBLE PRECISION` | Double-precision floating-point number; more precision than `REAL`. | `latitude DOUBLE PRECISION` |
+| `SERIAL` | Auto-incrementing integer-like type commonly used for IDs. | `id SERIAL PRIMARY KEY` |
+| `CHAR(n)` | Fixed-length character string. | `code CHAR(5)` |
+| `VARCHAR(n)` | Variable-length character string with a maximum length. | `name VARCHAR(50)` |
+| `TEXT` | Variable-length text without a specified maximum length. | `description TEXT` |
+
+> **Note:** `SERIAL` is PostgreSQL-specific shorthand that creates an integer column backed by a sequence. For newer PostgreSQL designs, identity columns (`GENERATED ... AS IDENTITY`) are generally preferred.
+
+## Basic SQL Notes
+
+### Create Database
+
+```sql
+CREATE DATABASE students;
+```
+
+Creates a new database named `students`.
+
+### Create Table
+
+```sql
+CREATE TABLE students(
+    id INT PRIMARY KEY,
+    name VARCHAR(50),
+    age SMALLINT,
+    class SMALLINT
+);
+```
+
+- `PRIMARY KEY` uniquely identifies each row.
+- `VARCHAR(50)` allows a string with a maximum length of 50 characters.
+- `SMALLINT` is suitable for relatively small whole numbers.
+
+### Insert Data
+
+```sql
+INSERT INTO students (id, name, age, class)
+VALUES
+    (1, 'Anuj', 19, 12),
+    (2, 'Aastha', 23, 15);
+```
+
+Adds one or more rows to a table.
+
+### Select Data
+
+```sql
+SELECT * FROM students;
+```
+
+Returns all columns and rows from the `students` table.
+
+Useful variations:
+
+```sql
+SELECT name, age FROM students;
+
+SELECT * FROM students WHERE age > 18;
+```
+
+### Update Data
+
+```sql
+UPDATE students
+SET age = 24
+WHERE name = 'Aastha';
+```
+
+Changes existing data.
+
+> **Important:** Always use a `WHERE` condition when you only want to update specific rows. Without `WHERE`, all rows can be updated.
+
+### Delete Data
+
+```sql
+DELETE FROM students
+WHERE name = 'Anuj';
+```
+
+Deletes rows matching the condition.
+
+> **Important:** `DELETE FROM students;` without a `WHERE` condition deletes all rows from the table.
+
+## Quick CRUD Reference
+
+| Operation | SQL Command |
+|---|---|
+| Create | `CREATE TABLE ...` |
+| Read | `SELECT ...` |
+| Update | `UPDATE ... SET ... WHERE ...` |
+| Delete | `DELETE FROM ... WHERE ...` |
