@@ -1,29 +1,34 @@
-PostgreSQL 
+# PostgreSQL
 
- basic CRUD opreations:
+## Basic CRUD Operations
 
- CREATE DATABASE students;
+```sql
+CREATE DATABASE students;
 
- CREATE TABLE students(
-    id INT PRIMARY LEY,
+CREATE TABLE students(
+    id INT PRIMARY KEY,
     name VARCHAR(50),
     age SMALLINT,
     class SMALLINT
- );
+);
 
- INSERT INTO students (id,name,age,class) VALUES (1,'Anuj',19,12),(2,'Aastha',23,15);
+INSERT INTO students (id, name, age, class) 
+VALUES (1, 'Anuj', 19, 12), (2, 'Aastha', 23, 15);
 
- SELECT * FROM students;
+SELECT * FROM students;
 
- update students SET age= 24 whrer name= 'Aastha';
+UPDATE students SET age = 24 WHERE name = 'Aastha';
 
- DELETE from students where name= 'Anuj';
+DELETE FROM students WHERE name = 'Anuj';
 
+```
+
+---
 
 ## PostgreSQL Data Types
 
 | Data Type | Description | Example |
-|---|---|---|
+| --- | --- | --- |
 | `SMALLINT` | Integer with a smaller range; useful for small numbers such as age or class. | `age SMALLINT` |
 | `INT` / `INTEGER` | Standard integer type for whole numbers. | `id INT` |
 | `BIGINT` | Integer type for very large whole numbers. | `population BIGINT` |
@@ -43,12 +48,28 @@ PostgreSQL
 
 > **Note:** `SERIAL` is PostgreSQL-specific shorthand that creates an integer column backed by a sequence. For newer PostgreSQL designs, identity columns (`GENERATED ... AS IDENTITY`) are generally preferred.
 
+---
+
+## PostgreSQL Constraints
+
+| Constraint | Description | Example |
+| --- | --- | --- |
+| `PRIMARY KEY` | Uniquely identifies each row | `id SERIAL PRIMARY KEY` |
+| `NOT NULL` | Column must have a value | `name TEXT NOT NULL` |
+| `UNIQUE` | No duplicate values allowed | `email TEXT UNIQUE` |
+| `DEFAULT` | Provides default value if none | `created_at TIMESTAMP DEFAULT now()` |
+| `CHECK` | Validates values | `age INT CHECK (age > 18)` |
+| `FOREIGN KEY` | Links one table to another | `user_id INT REFERENCES users(id)` |
+
+---
+
 ## Basic SQL Notes
 
 ### Create Database
 
 ```sql
 CREATE DATABASE students;
+
 ```
 
 Creates a new database named `students`.
@@ -62,11 +83,12 @@ CREATE TABLE students(
     age SMALLINT,
     class SMALLINT
 );
+
 ```
 
-- `PRIMARY KEY` uniquely identifies each row.
-- `VARCHAR(50)` allows a string with a maximum length of 50 characters.
-- `SMALLINT` is suitable for relatively small whole numbers.
+* `PRIMARY KEY` uniquely identifies each row.
+* `VARCHAR(50)` allows a string with a maximum length of 50 characters.
+* `SMALLINT` is suitable for relatively small whole numbers.
 
 ### Insert Data
 
@@ -75,6 +97,7 @@ INSERT INTO students (id, name, age, class)
 VALUES
     (1, 'Anuj', 19, 12),
     (2, 'Aastha', 23, 15);
+
 ```
 
 Adds one or more rows to a table.
@@ -83,6 +106,7 @@ Adds one or more rows to a table.
 
 ```sql
 SELECT * FROM students;
+
 ```
 
 Returns all columns and rows from the `students` table.
@@ -93,6 +117,7 @@ Useful variations:
 SELECT name, age FROM students;
 
 SELECT * FROM students WHERE age > 18;
+
 ```
 
 ### Update Data
@@ -101,6 +126,7 @@ SELECT * FROM students WHERE age > 18;
 UPDATE students
 SET age = 24
 WHERE name = 'Aastha';
+
 ```
 
 Changes existing data.
@@ -112,16 +138,19 @@ Changes existing data.
 ```sql
 DELETE FROM students
 WHERE name = 'Anuj';
+
 ```
 
 Deletes rows matching the condition.
 
 > **Important:** `DELETE FROM students;` without a `WHERE` condition deletes all rows from the table.
 
+---
+
 ## Quick CRUD Reference
 
 | Operation | SQL Command |
-|---|---|
+| --- | --- |
 | Create | `CREATE TABLE ...` |
 | Read | `SELECT ...` |
 | Update | `UPDATE ... SET ... WHERE ...` |
