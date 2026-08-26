@@ -34,6 +34,12 @@ PostgreSQL
 | `CHAR(n)` | Fixed-length character string. | `code CHAR(5)` |
 | `VARCHAR(n)` | Variable-length character string with a maximum length. | `name VARCHAR(50)` |
 | `TEXT` | Variable-length text without a specified maximum length. | `description TEXT` |
+| `BOOLEAN` | Stores `TRUE` or `FALSE` values. | `is_active BOOLEAN` |
+| `DATE` | Stores a date without a time. | `birth_date DATE` |
+| `TIME` | Stores a time of day without a date. | `start_time TIME` |
+| `TIMESTAMP` | Stores date and time without timezone information. | `created_at TIMESTAMP` |
+| `TIMESTAMPTZ` | Stores date and time with timezone awareness. | `created_at TIMESTAMPTZ` |
+| `INTERVAL` | Stores a duration or amount of time. | `duration INTERVAL` |
 
 > **Note:** `SERIAL` is PostgreSQL-specific shorthand that creates an integer column backed by a sequence. For newer PostgreSQL designs, identity columns (`GENERATED ... AS IDENTITY`) are generally preferred.
 
