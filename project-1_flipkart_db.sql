@@ -3,7 +3,7 @@ Create database Flipkart_db;
 create table products(
     product_id serial primary key,
 	name varchar(50) not null,
-	sku_code char(8) unique not null,
+	sku_code char(8) unique not null check(char_length(sku_code)=8),
 	price numeric(10,2) check(price>=0),
 	quantity int check(quantity>=0) default 0,
 	is_available boolean default TRUE,
@@ -27,4 +27,3 @@ insert into products (name,sku_code,price,quantity,is_available,category) values
 
 select * from products;
 
--- table output
