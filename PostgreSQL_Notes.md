@@ -21,10 +21,6 @@ UPDATE students SET age = 24 WHERE name = 'Aastha';
 
 DELETE FROM students WHERE name = 'Anuj';
 
-```
-
----
-
 ## PostgreSQL Data Types
 
 | Data Type | Description | Example |
@@ -70,6 +66,7 @@ DELETE FROM students WHERE name = 'Anuj';
 ```sql
 CREATE DATABASE students;
 
+
 ```
 
 Creates a new database named `students`.
@@ -83,6 +80,7 @@ CREATE TABLE students(
     age SMALLINT,
     class SMALLINT
 );
+
 
 ```
 
@@ -98,6 +96,7 @@ VALUES
     (1, 'Anuj', 19, 12),
     (2, 'Aastha', 23, 15);
 
+
 ```
 
 Adds one or more rows to a table.
@@ -106,6 +105,7 @@ Adds one or more rows to a table.
 
 ```sql
 SELECT * FROM students;
+
 
 ```
 
@@ -118,6 +118,7 @@ SELECT name, age FROM students;
 
 SELECT * FROM students WHERE age > 18;
 
+
 ```
 
 ### Update Data
@@ -126,6 +127,7 @@ SELECT * FROM students WHERE age > 18;
 UPDATE students
 SET age = 24
 WHERE name = 'Aastha';
+
 
 ```
 
@@ -138,6 +140,7 @@ Changes existing data.
 ```sql
 DELETE FROM students
 WHERE name = 'Anuj';
+
 
 ```
 
@@ -155,3 +158,23 @@ Deletes rows matching the condition.
 | Read | `SELECT ...` |
 | Update | `UPDATE ... SET ... WHERE ...` |
 | Delete | `DELETE FROM ... WHERE ...` |
+
+```
+
+---
+
+## SQL Clauses Overview
+
+| Clause | Description |
+| --- | --- |
+| `SELECT` | Choose which columns to display |
+| `FROM` | Specify the table |
+| `WHERE` | Filter rows based on a condition |
+| `GROUP BY` | Group rows for aggregation |
+| `HAVING` | Filter aggregated groups (used after GROUP BY) |
+| `ORDER BY` | Sort the result in ascending or descending order |
+| `LIMIT` | Limit the number of rows returned |
+| `AS` | Rename columns or tables temporarily (aliasing) |
+| `DISTINCT` | Return only unique/distinct values |
+
+---
