@@ -375,4 +375,196 @@ LIMIT 3;
 | `LIMIT`    | Limit the number of rows.        |
 | `AS`       | Create an alias.                 |
 | `DISTINCT` | Remove duplicate values.         |
-| >          |                                  |
+
+---
+
+# Aggregation Functions
+
+**Aggregation functions** perform calculations on multiple rows and return a single result or a result for each group.
+
+Common aggregation functions:
+
+| Function  | Description                               | Example      |
+| --------- | ----------------------------------------- | ------------ |
+| `COUNT()` | Counts the number of rows or values.      | `COUNT(*)`   |
+| `SUM()`   | Calculates the total of numeric values.   | `SUM(price)` |
+| `AVG()`   | Calculates the average of numeric values. | `AVG(price)` |
+| `MIN()`   | Finds the smallest value.                 | `MIN(price)` |
+| `MAX()`   | Finds the largest value.                  | `MAX(price)` |
+
+### Example
+
+```sql
+SELECT category, COUNT(*) AS total_products
+FROM products
+GROUP BY category;
+```
+
+This counts how many products exist in each category.
+
+---
+
+## Aggregation Use Cases
+
+### 1. Filter products greater than a certain price
+
+```sql
+SELECT *
+FROM products
+WHERE price > 100;
+```
+
+### 2. Search names that start with a certain letter
+
+```sql
+SELECT *
+FROM products
+WHERE name LIKE 'A%';
+```
+
+* `'A%'` → names starting with `A`.
+* `%` → represents zero or more characters.
+
+### 3. Count how many products are in each category
+
+```sql
+SELECT category, COUNT(*) AS total_products
+FROM products
+GROUP BY category;
+```
+
+### 4. Find the most expensive item per group
+
+```sql
+SELECT category, MAX(price) AS highest_price
+FROM products
+GROUP BY category;
+```
+
+---
+
+# SQL Operators
+
+Operators are symbols or keywords used to compare, filter, combine, and search values in SQL queries.
+
+## 1. Comparison Operators
+
+Used to compare two values.
+
+| Operator | Meaning                  | Example        |
+| -------- | ------------------------ | -------------- |
+| `=`      | Equal to                 | `price = 100`  |
+| `!=`     | Not equal to             | `price != 100` |
+| `<`      | Less than                | `price < 100`  |
+| `>`      | Greater than             | `price > 100`  |
+| `<=`     | Less than or equal to    | `price <= 100` |
+| `>=`     | Greater than or equal to | `price >= 100` |
+
+Example:
+
+```sql
+SELECT *
+FROM products
+WHERE price > 100;
+```
+
+---
+
+## 2. Range Operator — BETWEEN
+
+Used to check whether a value falls within a specified range.
+
+```sql
+SELECT *
+FROM products
+WHERE price BETWEEN 100 AND 500;
+```
+
+* `BETWEEN` includes both boundary values.
+
+---
+
+## 3. Set Operator — IN
+
+Used to check whether a value matches any value in a specified list.
+
+```sql
+SELECT *
+FROM products
+WHERE category IN ('Electronics', 'Clothing', 'Books');
+```
+
+This is useful when checking multiple possible values.
+
+---
+
+## 4. Pattern Operator — LIKE
+
+Used to search for a specific pattern in text.
+
+```sql
+SELECT *
+FROM products
+WHERE name LIKE 'A%';
+```
+
+Common patterns:
+
+| Pattern | Meaning                                           |
+| ------- | ------------------------------------------------- |
+| `'A%'`  | Starts with `A`                                   |
+| `'%A'`  | Ends with `A`                                     |
+| `'%A%'` | Contains `A`                                      |
+| `'A_'`  | Starts with `A` followed by exactly one character |
+
+---
+
+## 5. Logical Operators
+
+Used to combine or modify conditions.
+
+### AND
+
+All conditions must be true.
+
+```sql
+SELECT *
+FROM products
+WHERE price > 100
+AND category = 'Electronics';
+```
+
+### OR
+
+At least one condition must be true.
+
+```sql
+SELECT *
+FROM products
+WHERE category = 'Electronics'
+OR category = 'Books';
+```
+
+### NOT
+
+Reverses a condition.
+
+```sql
+SELECT *
+FROM products
+WHERE NOT category = 'Electronics';
+```
+
+---
+
+## Quick Operator Reference
+
+| Category   | Operators                       | Purpose                       |
+| ---------- | ------------------------------- | ----------------------------- |
+| Comparison | `=`, `!=`, `<`, `>`, `<=`, `>=` | Compare values                |
+| Range      | `BETWEEN`                       | Check a value within a range  |
+| Set        | `IN`                            | Match against multiple values |
+| Pattern    | `LIKE`                          | Search text patterns          |
+| Logical    | `AND`, `OR`, `NOT`              | Combine or reverse conditions |
+
+```
