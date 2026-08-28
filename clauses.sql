@@ -3,6 +3,7 @@
 -- 1. Show the name and price of all products.
 select name,price from products;
 
+
 -- 2. Show all products where the category is 'Electronics',.
 select * from products where category='Electronics';
 
