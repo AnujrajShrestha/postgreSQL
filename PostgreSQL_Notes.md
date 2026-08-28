@@ -178,3 +178,199 @@ Deletes rows matching the condition.
 | `DISTINCT` | Return only unique/distinct values |
 
 ---
+
+## SQL Clauses
+
+SQL clauses are keywords used to filter, group, sort, and control the data returned by a query.
+
+### 1. SELECT
+
+Used to specify which columns you want to retrieve.
+
+```sql
+SELECT name, price
+FROM products;
+````
+
+* `SELECT *` → returns all columns.
+* `SELECT name, price` → returns only the specified columns.
+
+---
+
+### 2. FROM
+
+Specifies the table from which the data is retrieved.
+
+```sql
+SELECT *
+FROM products;
+```
+
+* `FROM products` → retrieves data from the `products` table.
+
+---
+
+### 3. WHERE
+
+Used to filter rows based on a condition.
+
+```sql
+SELECT *
+FROM products
+WHERE category = 'Electronics';
+```
+
+* Only rows satisfying the condition are returned.
+* Common operators: `=`, `!=`, `>`, `<`, `>=`, `<=`.
+
+---
+
+### 4. GROUP BY
+
+Groups rows that have the same value in one or more columns.
+
+```sql
+SELECT category
+FROM products
+GROUP BY category;
+```
+
+Often used with aggregate functions such as:
+
+* `COUNT()`
+* `SUM()`
+* `AVG()`
+* `MIN()`
+* `MAX()`
+
+Example:
+
+```sql
+SELECT category, COUNT(*)
+FROM products
+GROUP BY category;
+```
+
+---
+
+### 5. HAVING
+
+Filters groups created by `GROUP BY`.
+
+```sql
+SELECT category, COUNT(*)
+FROM products
+GROUP BY category
+HAVING COUNT(*) > 1;
+```
+
+* `WHERE` → filters individual rows.
+* `HAVING` → filters grouped/aggregated results.
+
+---
+
+### 6. ORDER BY
+
+Sorts the result based on one or more columns.
+
+```sql
+SELECT *
+FROM products
+ORDER BY price ASC;
+```
+
+* `ASC` → ascending order (default).
+* `DESC` → descending order.
+
+Example:
+
+```sql
+SELECT *
+FROM products
+ORDER BY price DESC;
+```
+
+---
+
+### 7. LIMIT
+
+Limits the number of rows returned.
+
+```sql
+SELECT *
+FROM products
+LIMIT 3;
+```
+
+* Returns only the first 3 rows.
+
+---
+
+### 8. AS
+
+Creates a temporary alias (alternative name) for a column or table.
+
+```sql
+SELECT name AS Item_Name, price AS Item_Price
+FROM products;
+```
+
+* `AS` makes the output column names easier to understand.
+* The original column name in the table is not changed.
+
+---
+
+### 9. DISTINCT
+
+Removes duplicate values from the result.
+
+```sql
+SELECT DISTINCT category
+FROM products;
+```
+
+* Returns each category only once.
+
+---
+
+## Clause Order
+
+A typical SQL query follows this order:
+
+```sql
+SELECT column
+FROM table
+WHERE condition
+GROUP BY column
+HAVING condition
+ORDER BY column
+LIMIT number;
+```
+
+Example:
+
+```sql
+SELECT category, COUNT(*) AS total_products
+FROM products
+WHERE price > 100
+GROUP BY category
+HAVING COUNT(*) > 1
+ORDER BY total_products DESC
+LIMIT 3;
+```
+
+### Quick Reference
+
+| Clause     | Purpose                         |
+| ---------- | ------------------------------- |
+| `SELECT`   | Choose columns to display       |
+| `FROM`     | Specify the table               |
+| `WHERE`    | Filter individual rows          |
+| `GROUP BY` | Group rows with the same values |
+| `HAVING`   | Filter grouped results          |
+| `ORDER BY` | Sort the result                 |
+| `LIMIT`    | Limit the number of rows        |
+| `AS`       | Create an alias                 |
+| `DISTINCT` | Remove duplicate values         |
+
+```
