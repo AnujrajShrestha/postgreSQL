@@ -12,3 +12,6 @@ select name,quantity from products where is_available= TRUE and quantity > 50 an
 
 -- 4. Find the most expensive product in each category (name and price).
 select name,price,category from products p where price= (select max(price) from products where category= p.category);
+
+-- 5. Show all unique categories in uppercase, sorted in descending order.
+select Distinct upper(category) as category from products order by category DESC;
