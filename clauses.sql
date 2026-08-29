@@ -1,33 +1,25 @@
--- Operators
+-- Clauses
 
--- 1. Show all products where category is equal to 'Electronics'.
-select * from products where category = 'Electronics';
+-- 1. Show the name and price of all products.
+select name,price from products;
 
--- 2. Show all products where catoegory is not equal to 'Electronics'.
-select * from products where category != 'Electronics';
+-- 2. Show all products where the category is 'Electronics'.
+select * from products where category= 'Electronics';
 
--- 3. Show all products where price is greater than 1000.
-select * from products where price > 1000;
+-- 3. Group products by category show each category  once.
+select category from products Group by category;
 
--- 4. Show all products where price is less than 1000.
-select * from products where price < 1000;
+-- 4. Show categories that have more than 1 products (Use after Group by).
+select category from products Group by category having count(*) > 1;
 
--- 5. Show all products where price is greater than 1000 and category must be 'Electronics'.
-select * from products where price > 1000 and category = 'Electronics';
+-- 5. Show all products sorted by price in ascending order
+select * from products order by price;
 
--- 6. Show all products where price is less than 1000 and greater than 400.
-select * from products where price < 1000 and price > 400;
-select * from products where price Between 400 and 1000; 
+-- 6. Show only tje frist 3 products from the table.
+select * from products limit 3;
 
--- 7. Show all products where category is 'Electronics' or 'Fitness'.
-select * from products where category = 'Electronics' or category = 'Fitness';
-select * from products where category in ('Electronics','Fitness');
+-- 7. Show products name as 'Item_name', price  as 'item_price'.
+select name as Item_name , price as item_price from products;
 
--- 8. Show all products whose sku_code frist letter is 'W'.
-select * from products where sku_code like 'W%'; 
-
--- 9. Show all products who has '123' in between there sku_code.
-select * from products where sku_code like '%123%';
-
--- 10. Show all products whose sku_code second letter is 'B'.
-select * from products where sku_code like '_B%';
+-- 8. Show all the unique category from the products. 
+select Distinct category from products;
