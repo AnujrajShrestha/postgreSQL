@@ -1,810 +1,679 @@
-\# PostgreSQL
+# PostgreSQL
 
-\## Basic CRUD Operations
+## Basic CRUD Operations
 
-\`\`\`sql
+CRUD stands for **Create, Read, Update, and Delete**.
 
+```sql
 CREATE DATABASE students;
 
 CREATE TABLE students(
-
-    id INT PRIMARY KEY,
-
-    name VARCHAR(50),
-
-    age SMALLINT,
-
-    class SMALLINT
-
+    id INT PRIMARY KEY,
+    name VARCHAR(50),
+    age SMALLINT,
+    class SMALLINT
 );
 
 INSERT INTO students (id, name, age, class) 
-
 VALUES 
+    (1, 'Anuj', 19, 12),
+    (2, 'Aastha', 23, 15);
 
-    (1, 'Anuj', 19, 12),
-
-    (2, 'Aastha', 23, 15);
-
-SELECT \* FROM students;
+SELECT * FROM students;
 
 UPDATE students 
-
 SET age = 24 
-
 WHERE name = 'Aastha';
 
 DELETE FROM students 
-
 WHERE name = 'Anuj';
+```
 
-\`\`\`
+---
 
-\---
+# PostgreSQL Data Types
 
-\## PostgreSQL Data Types
+| Data Type          | Description                                                                                             | Example                     |
+| ------------------ | ------------------------------------------------------------------------------------------------------- | --------------------------- |
+| `SMALLINT`         | Integer with a smaller range; useful for small numbers such as age or class.                            | `age SMALLINT`              |
+| `INT` / `INTEGER`  | Standard integer type for whole numbers.                                                                | `id INT`                    |
+| `BIGINT`           | Integer type for very large whole numbers.                                                              | `population BIGINT`         |
+| `NUMERIC(p,s)`     | Exact numeric type; useful when precision is important. `p` = total digits, `s` = digits after decimal. | `price NUMERIC(10,2)`       |
+| `REAL`             | Single-precision floating-point number.                                                                 | `temperature REAL`          |
+| `DOUBLE PRECISION` | Double-precision floating-point number with more precision than `REAL`.                                 | `latitude DOUBLE PRECISION` |
+| `SERIAL`           | PostgreSQL shorthand for an integer column backed by a sequence.                                        | `id SERIAL PRIMARY KEY`     |
+| `CHAR(n)`          | Fixed-length character string. Values shorter than `n` are blank-padded.                                | `code CHAR(5)`              |
+| `VARCHAR(n)`       | Variable-length character string with a maximum length.                                                 | `name VARCHAR(50)`          |
+| `TEXT`             | Variable-length text without a specified maximum length.                                                | `description TEXT`          |
+| `BOOLEAN`          | Stores `TRUE` or `FALSE`.                                                                               | `is_active BOOLEAN`         |
+| `DATE`             | Stores a date without a time.                                                                           | `birth_date DATE`           |
+| `TIME`             | Stores a time of day without a date.                                                                    | `start_time TIME`           |
+| `TIMESTAMP`        | Stores date and time without timezone information.                                                      | `created_at TIMESTAMP`      |
+| `TIMESTAMPTZ`      | Stores an absolute date/time value with timezone handling.                                              | `created_at TIMESTAMPTZ`    |
+| `INTERVAL`         | Stores a duration or amount of time.                                                                    | `duration INTERVAL`         |
 
-\| Data Type          | Description                                                                                                            | Example                     |
+> **Note:** `SERIAL` is PostgreSQL-specific shorthand that creates an integer column backed by a sequence. For newer PostgreSQL designs, identity columns such as `GENERATED ALWAYS AS IDENTITY` are generally preferred.
 
-\| ------------------ | ---------------------------------------------------------------------------------------------------------------------- | --------------------------- |
+---
 
-\| \`SMALLINT\`         | Integer with a smaller range; useful for small numbers such as age or class.                                           | \`age SMALLINT\`              |
+# PostgreSQL Constraints
 
-\| \`INT\` / \`INTEGER\`  | Standard integer type for whole numbers.                                                                               | \`id INT\`                    |
+Constraints are rules applied to table columns to maintain data integrity.
 
-\| \`BIGINT\`           | Integer type for very large whole numbers.                                                                             | \`population BIGINT\`         |
+| Constraint    | Description                                     | Example                              |
+| ------------- | ----------------------------------------------- | ------------------------------------ |
+| `PRIMARY KEY` | Uniquely identifies each row.                   | `id INT PRIMARY KEY`                 |
+| `NOT NULL`    | Column must have a value.                       | `name TEXT NOT NULL`                 |
+| `UNIQUE`      | Prevents duplicate values.                      | `email TEXT UNIQUE`                  |
+| `DEFAULT`     | Provides a default value when none is supplied. | `created_at TIMESTAMP DEFAULT now()` |
+| `CHECK`       | Validates values using a condition.             | `age INT CHECK (age > 18)`           |
+| `FOREIGN KEY` | Links one table to another.                     | `user_id INT REFERENCES users(id)`   |
 
-\| \`NUMERIC(p,s)\`     | Exact numeric type; useful when precision is important, such as money. \`p\` = total digits, \`s\` = digits after decimal. | \`price NUMERIC(10,2)\`       |
+---
 
-\| \`REAL\`             | Single-precision floating-point number.                                                                                | \`temperature REAL\`          |
+# Basic SQL Notes
 
-\| \`DOUBLE PRECISION\` | Double-precision floating-point number; more precision than \`REAL\`.                                                    | \`latitude DOUBLE PRECISION\` |
+## Create Database
 
-\| \`SERIAL\`           | Auto-incrementing integer-like type commonly used for IDs.                                                             | \`id SERIAL PRIMARY KEY\`     |
-
-\| \`CHAR(n)\`          | Fixed-length character string.                                                                                         | \`code CHAR(5)\`              |
-
-\| \`VARCHAR(n)\`       | Variable-length character string with a maximum length.                                                                | \`name VARCHAR(50)\`          |
-
-\| \`TEXT\`             | Variable-length text without a specified maximum length.                                                               | \`description TEXT\`          |
-
-\| \`BOOLEAN\`          | Stores \`TRUE\` or \`FALSE\` values.                                                                                       | \`is\_active BOOLEAN\`         |
-
-\| \`DATE\`             | Stores a date without a time.                                                                                          | \`birth\_date DATE\`           |
-
-\| \`TIME\`             | Stores a time of day without a date.                                                                                   | \`start\_time TIME\`           |
-
-\| \`TIMESTAMP\`        | Stores date and time without timezone information.                                                                     | \`created\_at TIMESTAMP\`      |
-
-\| \`TIMESTAMPTZ\`      | Stores date and time with timezone awareness.                                                                          | \`created\_at TIMESTAMPTZ\`    |
-
-\| \`INTERVAL\`         | Stores a duration or amount of time.                                                                                   | \`duration INTERVAL\`         |
-
-\> **\*\*Note:\*\*** \`SERIAL\` is PostgreSQL-specific shorthand that creates an integer column backed by a sequence. For newer PostgreSQL designs, identity columns (\`GENERATED ... AS IDENTITY\`) are generally preferred.
-
-\---
-
-\## PostgreSQL Constraints
-
-\| Constraint    | Description                                   | Example                              |
-
-\| ------------- | --------------------------------------------- | ------------------------------------ |
-
-\| \`PRIMARY KEY\` | Uniquely identifies each row.                 | \`id SERIAL PRIMARY KEY\`              |
-
-\| \`NOT NULL\`    | Column must have a value.                     | \`name TEXT NOT NULL\`                 |
-
-\| \`UNIQUE\`      | No duplicate values are allowed.              | \`email TEXT UNIQUE\`                  |
-
-\| \`DEFAULT\`     | Provides a default value if none is supplied. | \`created\_at TIMESTAMP DEFAULT now()\` |
-
-\| \`CHECK\`       | Validates values using a condition.           | \`age INT CHECK (age > 18)\`           |
-
-\| \`FOREIGN KEY\` | Links one table to another.                   | \`user\_id INT REFERENCES users(id)\`   |
-
-\---
-
-\## Basic SQL Notes
-
-\### Create Database
-
-\`\`\`sql
-
+```sql
 CREATE DATABASE students;
+```
 
-\`\`\`
+Creates a new database named `students`.
 
-Creates a new database named \`students\`.
+> **Note:** `CREATE DATABASE` is a DDL command, not part of CRUD.
 
-\### Create Table
+---
 
-\`\`\`sql
+## Create Table
 
+```sql
 CREATE TABLE students(
-
-    id INT PRIMARY KEY,
-
-    name VARCHAR(50),
-
-    age SMALLINT,
-
-    class SMALLINT
-
+    id INT PRIMARY KEY,
+    name VARCHAR(50),
+    age SMALLINT,
+    class SMALLINT
 );
+```
 
-\`\`\`
+* `PRIMARY KEY` uniquely identifies each row.
+* `VARCHAR(50)` allows a variable-length string up to 50 characters.
+* `SMALLINT` is suitable for relatively small whole numbers.
 
-\* \`PRIMARY KEY\` uniquely identifies each row.
+---
 
-\* \`VARCHAR(50)\` allows a string with a maximum length of 50 characters.
+## Insert Data
 
-\* \`SMALLINT\` is suitable for relatively small whole numbers.
-
-\### Insert Data
-
-\`\`\`sql
-
+```sql
 INSERT INTO students (id, name, age, class)
-
 VALUES
-
-    (1, 'Anuj', 19, 12),
-
-    (2, 'Aastha', 23, 15);
-
-\`\`\`
+    (1, 'Anuj', 19, 12),
+    (2, 'Aastha', 23, 15);
+```
 
 Adds one or more rows to a table.
 
-\### Select Data
+---
 
-\`\`\`sql
+## Select Data
 
-SELECT \* FROM students;
+```sql
+SELECT * FROM students;
+```
 
-\`\`\`
+Returns all columns and rows from the `students` table.
 
-Returns all columns and rows from the \`students\` table.
+### Useful Variations
 
-\#### Useful Variations
-
-\`\`\`sql
-
-SELECT name, age 
-
+```sql
+SELECT name, age
 FROM students;
+```
 
-SELECT \* 
-
-FROM students 
-
+```sql
+SELECT *
+FROM students
 WHERE age > 18;
+```
 
-\`\`\`
+---
 
-\### Update Data
+## Update Data
 
-\`\`\`sql
-
+```sql
 UPDATE students
-
 SET age = 24
-
 WHERE name = 'Aastha';
-
-\`\`\`
+```
 
 Changes existing data.
 
-\> **\*\*Important:\*\*** Always use a \`WHERE\` condition when you only want to update specific rows. Without \`WHERE\`, all rows can be updated.
+> **Important:** Always use a `WHERE` condition when you only want to update specific rows. Without `WHERE`, all rows can be updated.
 
-\### Delete Data
+---
 
-\`\`\`sql
+## Delete Data
 
+```sql
 DELETE FROM students
-
 WHERE name = 'Anuj';
-
-\`\`\`
+```
 
 Deletes rows matching the condition.
 
-\> **\*\*Important:\*\*** \`DELETE FROM students;\` without a \`WHERE\` condition deletes all rows from the table.
+> **Important:** `DELETE FROM students;` without a `WHERE` condition deletes all rows from the table.
 
-\---
+---
 
-\## Quick CRUD Reference
+# Quick CRUD Reference
 
-\| Operation | SQL Command                    |
+| Operation | SQL Command                    |
+| --------- | ------------------------------ |
+| Create    | `INSERT INTO ...`              |
+| Read      | `SELECT ...`                   |
+| Update    | `UPDATE ... SET ... WHERE ...` |
+| Delete    | `DELETE FROM ... WHERE ...`    |
 
-\| --------- | ------------------------------ |
+> **Note:** `CREATE DATABASE` and `CREATE TABLE` are DDL commands. CRUD's "Create" refers to creating/inserting records with `INSERT`.
 
-\| Create    | \`CREATE TABLE ...\`             |
+---
 
-\| Read      | \`SELECT ...\`                   |
-
-\| Update    | \`UPDATE ... SET ... WHERE ...\` |
-
-\| Delete    | \`DELETE FROM ... WHERE ...\`    |
-
-\---
-
-\# SQL Clauses Overview
+# SQL Clauses Overview
 
 SQL clauses are keywords used to retrieve, filter, group, sort, and limit data.
 
-\| Clause     | Description                                       |
+| Clause     | Description                            |
+| ---------- | -------------------------------------- |
+| `SELECT`   | Choose which columns to display.       |
+| `FROM`     | Specify the table.                     |
+| `WHERE`    | Filter rows based on a condition.      |
+| `GROUP BY` | Group rows for aggregation.            |
+| `HAVING`   | Filter aggregated groups.              |
+| `ORDER BY` | Sort the result.                       |
+| `LIMIT`    | Limit the number of rows returned.     |
+| `AS`       | Create an alias for columns or tables. |
+| `DISTINCT` | Return only unique values.             |
 
-\| ---------- | ------------------------------------------------- |
+---
 
-\| \`SELECT\`   | Choose which columns to display.                  |
+# SQL Clauses
 
-\| \`FROM\`     | Specify the table.                                |
-
-\| \`WHERE\`    | Filter rows based on a condition.                 |
-
-\| \`GROUP BY\` | Group rows for aggregation.                       |
-
-\| \`HAVING\`   | Filter aggregated groups.                         |
-
-\| \`ORDER BY\` | Sort the result in ascending or descending order. |
-
-\| \`LIMIT\`    | Limit the number of rows returned.                |
-
-\| \`AS\`       | Create an alias for columns or tables.            |
-
-\| \`DISTINCT\` | Return only unique values.                        |
-
-\---
-
-\## SQL Clauses
-
-SQL clauses are keywords used to filter, group, sort, and control the data returned by a query.
-
-\### 1. SELECT
+## 1. SELECT
 
 Used to specify which columns you want to retrieve.
 
-\`\`\`sql
-
+```sql
 SELECT name, price
-
 FROM products;
+```
 
-\`\`\`
+* `SELECT *` → returns all columns.
+* `SELECT name, price` → returns only the specified columns.
 
-\* \`SELECT \*\` → returns all columns.
+---
 
-\* \`SELECT name, price\` → returns only the specified columns.
-
-\---
-
-\### 2. FROM
+## 2. FROM
 
 Specifies the table from which the data is retrieved.
 
-\`\`\`sql
-
-SELECT \*
-
+```sql
+SELECT *
 FROM products;
+```
 
-\`\`\`
+* `FROM products` → retrieves data from the `products` table.
 
-\* \`FROM products\` → retrieves data from the \`products\` table.
+---
 
-\---
-
-\### 3. WHERE
+## 3. WHERE
 
 Used to filter rows based on a condition.
 
-\`\`\`sql
-
-SELECT \*
-
+```sql
+SELECT *
 FROM products
-
 WHERE category = 'Electronics';
+```
 
-\`\`\`
+Only rows satisfying the condition are returned.
 
-\* Only rows satisfying the condition are returned.
+Common operators:
 
-\* Common operators: \`=\`, \`!=\`, \`>\`, \`<\`, \`>=\`, \`<=\`.
+```text
+=    !=    >    <    >=    <=
+```
 
-\---
+---
 
-\### 4. GROUP BY
+## 4. GROUP BY
 
 Groups rows that have the same value in one or more columns.
 
-\`\`\`sql
-
+```sql
 SELECT category
-
 FROM products
-
 GROUP BY category;
-
-\`\`\`
+```
 
 Often used with aggregate functions such as:
 
-\* \`COUNT()\`
-
-\* \`SUM()\`
-
-\* \`AVG()\`
-
-\* \`MIN()\`
-
-\* \`MAX()\`
+* `COUNT()`
+* `SUM()`
+* `AVG()`
+* `MIN()`
+* `MAX()`
 
 Example:
 
-\`\`\`sql
-
-SELECT category, COUNT(\*)
-
+```sql
+SELECT category, COUNT(*) AS total_products
 FROM products
-
 GROUP BY category;
+```
 
-\`\`\`
+---
 
-\---
+## 5. HAVING
 
-\### 5. HAVING
+Filters groups created by `GROUP BY`.
 
-Filters groups created by \`GROUP BY\`.
-
-\`\`\`sql
-
-SELECT category, COUNT(\*)
-
+```sql
+SELECT category, COUNT(*) AS total_products
 FROM products
-
 GROUP BY category
+HAVING COUNT(*) > 1;
+```
 
-HAVING COUNT(\*) > 1;
+* `WHERE` → filters individual rows.
+* `HAVING` → filters grouped/aggregated results.
 
-\`\`\`
+---
 
-\* \`WHERE\` → filters individual rows.
-
-\* \`HAVING\` → filters grouped/aggregated results.
-
-\---
-
-\### 6. ORDER BY
+## 6. ORDER BY
 
 Sorts the result based on one or more columns.
 
-\`\`\`sql
-
-SELECT \*
-
+```sql
+SELECT *
 FROM products
-
 ORDER BY price ASC;
+```
 
-\`\`\`
-
-\* \`ASC\` → ascending order.
-
-\* \`DESC\` → descending order.
+* `ASC` → ascending order.
+* `DESC` → descending order.
 
 Example:
 
-\`\`\`sql
-
-SELECT \*
-
+```sql
+SELECT *
 FROM products
-
 ORDER BY price DESC;
+```
 
-\`\`\`
+---
 
-\---
-
-\### 7. LIMIT
+## 7. LIMIT
 
 Limits the number of rows returned.
 
-\`\`\`sql
-
-SELECT \*
-
+```sql
+SELECT *
 FROM products
-
 LIMIT 3;
+```
 
-\`\`\`
+Returns only the first 3 rows.
 
-\* Returns only the first 3 rows.
+---
 
-\---
+## 8. AS
 
-\### 8. AS
+Creates a temporary alias for a column or table.
 
-Creates a temporary alias (alternative name) for a column or table.
-
-\`\`\`sql
-
-SELECT 
-
-    name AS Item\_Name,
-
-    price AS Item\_Price
-
+```sql
+SELECT
+    name AS item_name,
+    price AS item_price
 FROM products;
+```
 
-\`\`\`
+* Makes output column names easier to understand.
+* Does not change the original column name.
 
-\* \`AS\` makes output column names easier to understand.
+---
 
-\* The original column name in the table is not changed.
-
-\---
-
-\### 9. DISTINCT
+## 9. DISTINCT
 
 Removes duplicate values from the result.
 
-\`\`\`sql
-
+```sql
 SELECT DISTINCT category
-
 FROM products;
+```
 
-\`\`\`
+Returns each category only once.
 
-\* Returns each category only once.
+---
 
-\---
+# SQL Clause Order
 
-\## Clause Order
+A typical SQL query follows this structure:
 
-A typical SQL query follows this order:
-
-\`\`\`sql
-
-SELECT column
-
+```sql
+SELECT DISTINCT column
 FROM table
-
 WHERE condition
-
 GROUP BY column
-
 HAVING condition
-
 ORDER BY column
-
 LIMIT number;
+```
 
-\`\`\`
+### Example
 
-\### Example
-
-\`\`\`sql
-
-SELECT 
-
-    category, 
-
-    COUNT(\*) AS total\_products
-
+```sql
+SELECT
+    category,
+    COUNT(*) AS total_products
 FROM products
-
 WHERE price > 100
-
 GROUP BY category
-
-HAVING COUNT(\*) > 1
-
-ORDER BY total\_products DESC
-
+HAVING COUNT(*) > 1
+ORDER BY total_products DESC
 LIMIT 3;
+```
 
-\`\`\`
+---
 
-\---
+# Quick Clause Reference
 
-\## Quick Clause Reference
+| Clause     | Purpose                          |
+| ---------- | -------------------------------- |
+| `SELECT`   | Choose columns to display.       |
+| `FROM`     | Specify the table.               |
+| `WHERE`    | Filter individual rows.          |
+| `GROUP BY` | Group rows with the same values. |
+| `HAVING`   | Filter grouped results.          |
+| `ORDER BY` | Sort the result.                 |
+| `LIMIT`    | Limit the number of rows.        |
+| `AS`       | Create an alias.                 |
+| `DISTINCT` | Remove duplicate values.         |
 
-\| Clause     | Purpose                          |
+---
 
-\| ---------- | -------------------------------- |
+# Aggregation Functions
 
-\| \`SELECT\`   | Choose columns to display.       |
+Aggregate functions perform calculations on multiple rows and return a single result or a result for each group.
 
-\| \`FROM\`     | Specify the table.               |
+| Function  | Description                               | Example      |
+| --------- | ----------------------------------------- | ------------ |
+| `COUNT()` | Counts rows or non-null values.           | `COUNT(*)`   |
+| `SUM()`   | Calculates the total of numeric values.   | `SUM(price)` |
+| `AVG()`   | Calculates the average of numeric values. | `AVG(price)` |
+| `MIN()`   | Finds the smallest value.                 | `MIN(price)` |
+| `MAX()`   | Finds the largest value.                  | `MAX(price)` |
 
-\| \`WHERE\`    | Filter individual rows.          |
+### Example
 
-\| \`GROUP BY\` | Group rows with the same values. |
-
-\| \`HAVING\`   | Filter grouped results.          |
-
-\| \`ORDER BY\` | Sort the result.                 |
-
-\| \`LIMIT\`    | Limit the number of rows.        |
-
-\| \`AS\`       | Create an alias.                 |
-
-\| \`DISTINCT\` | Remove duplicate values.         |
-
-\---
-
-\# Aggregation Functions
-
-**\*\*Aggregation functions\*\*** perform calculations on multiple rows and return a single result or a result for each group.
-
-Common aggregation functions:
-
-\| Function  | Description                               | Example      |
-
-\| --------- | ----------------------------------------- | ------------ |
-
-\| \`COUNT()\` | Counts the number of rows or values.      | \`COUNT(\*)\`   |
-
-\| \`SUM()\`   | Calculates the total of numeric values.   | \`SUM(price)\` |
-
-\| \`AVG()\`   | Calculates the average of numeric values. | \`AVG(price)\` |
-
-\| \`MIN()\`   | Finds the smallest value.                 | \`MIN(price)\` |
-
-\| \`MAX()\`   | Finds the largest value.                  | \`MAX(price)\` |
-
-\### Example
-
-\`\`\`sql
-
-SELECT category, COUNT(\*) AS total\_products
-
+```sql
+SELECT
+    category,
+    COUNT(*) AS total_products
 FROM products
-
 GROUP BY category;
+```
 
-\`\`\`
+Counts how many products exist in each category.
 
-This counts how many products exist in each category.
+---
 
-\---
+## Aggregation Examples
 
-\## Aggregation Use Cases
+### Count Products
 
-\### 1. Filter products greater than a certain price
+```sql
+SELECT COUNT(*) AS total_products
+FROM products;
+```
 
-\`\`\`sql
+### Calculate Total Price
 
-SELECT \*
+```sql
+SELECT SUM(price) AS total_price
+FROM products;
+```
 
+### Calculate Average Price
+
+```sql
+SELECT AVG(price) AS average_price
+FROM products;
+```
+
+### Find Cheapest Product Price
+
+```sql
+SELECT MIN(price) AS lowest_price
+FROM products;
+```
+
+### Find Most Expensive Product Price
+
+```sql
+SELECT MAX(price) AS highest_price
+FROM products;
+```
+
+### Find Highest Price Per Category
+
+```sql
+SELECT
+    category,
+    MAX(price) AS highest_price
 FROM products
+GROUP BY category;
+```
 
+---
+
+# Filtering and Pattern Matching Examples
+
+## Products Greater Than a Certain Price
+
+```sql
+SELECT *
+FROM products
 WHERE price > 100;
+```
 
-\`\`\`
+## Names Starting With a Certain Letter
 
-\### 2. Search names that start with a certain letter
-
-\`\`\`sql
-
-SELECT \*
-
+```sql
+SELECT *
 FROM products
-
 WHERE name LIKE 'A%';
+```
 
-\`\`\`
+* `'A%'` → starts with `A`.
+* `%` → represents zero or more characters.
 
-\* \`'A%'\` → names starting with \`A\`.
+---
 
-\* \`%\` → represents zero or more characters.
+# SQL Operators
 
-\### 3. Count how many products are in each category
+Operators are symbols or keywords used to compare, filter, combine, and search values.
 
-\`\`\`sql
+## 1. Comparison Operators
 
-SELECT category, COUNT(\*) AS total\_products
-
-FROM products
-
-GROUP BY category;
-
-\`\`\`
-
-\### 4. Find the most expensive item per group
-
-\`\`\`sql
-
-SELECT category, MAX(price) AS highest\_price
-
-FROM products
-
-GROUP BY category;
-
-\`\`\`
-
-\---
-
-\# SQL Operators
-
-Operators are symbols or keywords used to compare, filter, combine, and search values in SQL queries.
-
-\## 1. Comparison Operators
-
-Used to compare two values.
-
-\| Operator | Meaning                  | Example        |
-
-\| -------- | ------------------------ | -------------- |
-
-\| \`=\`      | Equal to                 | \`price = 100\`  |
-
-\| \`!=\`     | Not equal to             | \`price != 100\` |
-
-\| \`<\`      | Less than                | \`price < 100\`  |
-
-\| \`>\`      | Greater than             | \`price > 100\`  |
-
-\| \`<=\`     | Less than or equal to    | \`price <= 100\` |
-
-\| \`>=\`     | Greater than or equal to | \`price >= 100\` |
+| Operator | Meaning                  | Example        |
+| -------- | ------------------------ | -------------- |
+| `=`      | Equal to                 | `price = 100`  |
+| `!=`     | Not equal to             | `price != 100` |
+| `<`      | Less than                | `price < 100`  |
+| `>`      | Greater than             | `price > 100`  |
+| `<=`     | Less than or equal to    | `price <= 100` |
+| `>=`     | Greater than or equal to | `price >= 100` |
 
 Example:
 
-\`\`\`sql
-
-SELECT \*
-
+```sql
+SELECT *
 FROM products
-
 WHERE price > 100;
+```
 
-\`\`\`
+---
 
-\---
-
-\## 2. Range Operator — BETWEEN
+## 2. BETWEEN
 
 Used to check whether a value falls within a specified range.
 
-\`\`\`sql
-
-SELECT \*
-
+```sql
+SELECT *
 FROM products
-
 WHERE price BETWEEN 100 AND 500;
+```
 
-\`\`\`
+> `BETWEEN` includes both boundary values.
 
-\* \`BETWEEN\` includes both boundary values.
+The above is equivalent to:
 
-\---
+```sql
+WHERE price >= 100 AND price <= 500
+```
 
-\## 3. Set Operator — IN
+---
+
+## 3. IN
 
 Used to check whether a value matches any value in a specified list.
 
-\`\`\`sql
-
-SELECT \*
-
+```sql
+SELECT *
 FROM products
-
 WHERE category IN ('Electronics', 'Clothing', 'Books');
-
-\`\`\`
+```
 
 This is useful when checking multiple possible values.
 
-\---
+---
 
-\## 4. Pattern Operator — LIKE
+## 4. LIKE
 
 Used to search for a specific pattern in text.
 
-\`\`\`sql
-
-SELECT \*
-
+```sql
+SELECT *
 FROM products
-
 WHERE name LIKE 'A%';
+```
 
-\`\`\`
+### Common Patterns
 
-Common patterns:
+| Pattern | Meaning                                           |
+| ------- | ------------------------------------------------- |
+| `'A%'`  | Starts with `A`                                   |
+| `'%A'`  | Ends with `A`                                     |
+| `'%A%'` | Contains `A`                                      |
+| `'A_'`  | Starts with `A` followed by exactly one character |
 
-\| Pattern | Meaning                                           |
+---
 
-\| ------- | ------------------------------------------------- |
+## 5. ILIKE
 
-\| \`'A%'\`  | Starts with \`A\`                                   |
+PostgreSQL provides `ILIKE` for case-insensitive pattern matching.
 
-\| \`'%A'\`  | Ends with \`A\`                                     |
+```sql
+SELECT *
+FROM products
+WHERE name ILIKE 'phone%';
+```
 
-\| \`'%A%'\` | Contains \`A\`                                      |
+This can match values such as:
 
-\| \`'A\_'\`  | Starts with \`A\` followed by exactly one character |
+```text
+Phone
+PHONE
+phone
+Phone Case
+```
 
-\---
+---
 
-\## 5. Logical Operators
+## 6. Logical Operators
 
-Used to combine or modify conditions.
-
-\### AND
+### AND
 
 All conditions must be true.
 
-\`\`\`sql
-
-SELECT \*
-
+```sql
+SELECT *
 FROM products
-
 WHERE price > 100
-
 AND category = 'Electronics';
+```
 
-\`\`\`
-
-\### OR
+### OR
 
 At least one condition must be true.
 
-\`\`\`sql
-
-SELECT \*
-
+```sql
+SELECT *
 FROM products
-
 WHERE category = 'Electronics'
-
 OR category = 'Books';
+```
 
-\`\`\`
-
-\### NOT
+### NOT
 
 Reverses a condition.
 
-\`\`\`sql
-
-SELECT \*
-
+```sql
+SELECT *
 FROM products
-
 WHERE NOT category = 'Electronics';
+```
 
-\`\`\`
+---
 
-\---
+## 7. NULL Operators
 
-\## Quick Operator Reference
+`NULL` represents a missing or unknown value.
 
-\| Category   | Operators                       | Purpose                       |
+You should **not** use:
 
-\| ---------- | ------------------------------- | ----------------------------- |
+```sql
+WHERE name = NULL;
+```
 
-\| Comparison | \`=\`, \`!=\`, \`<\`, \`>\`, \`<=\`, \`>=\` | Compare values                |
+Instead, use `IS NULL`:
 
-\| Range      | \`BETWEEN\`                       | Check a value within a range  |
+```sql
+SELECT *
+FROM products
+WHERE name IS NULL;
+```
 
-\| Set        | \`IN\`                            | Match against multiple values |
+To find values that are not `NULL`:
 
-\| Pattern    | \`LIKE\`                          | Search text patterns          |
+```sql
+SELECT *
+FROM products
+WHERE name IS NOT NULL;
+```
 
-\| Logical    | \`AND\`, \`OR\`, \`NOT\`              | Combine or reverse conditions |
+---
 
-\`\`\`
+# Quick Operator Reference
+
+| Category   | Operators                       | Purpose                       |
+| ---------- | ------------------------------- | ----------------------------- |
+| Comparison | `=`, `!=`, `<`, `>`, `<=`, `>=` | Compare values                |
+| Range      | `BETWEEN`                       | Check a value within a range  |
+| Set        | `IN`                            | Match against multiple values |
+| Pattern    | `LIKE`, `ILIKE`                 | Search text patterns          |
+| Logical    | `AND`, `OR`, `NOT`              | Combine or reverse conditions |
+| NULL       | `IS NULL`, `IS NOT NULL`        | Check missing values          |
 
 ---
 
@@ -814,21 +683,22 @@ String functions are used to manipulate, format, search, and transform text valu
 
 ## String Functions Reference
 
-| Function | Description | Example |
-| --- | --- | --- |
-| `LOWER(text)` | Converts text to lowercase. | `'LAPTOP'` → `'laptop'` |
-| `UPPER(text)` | Converts text to uppercase. | `'mouse'` → `'MOUSE'` |
-| `LENGTH(text)` | Returns the number of characters in a string. | `'Laptop'` → `6` |
-| `SUBSTRING(text, start, length)` | Extracts a part of a string. | `'Notebook'` → `'Note'` |
-| `LEFT(text, n)` | Gets the left-most `n` characters. | `'Notebook'` → `'Note'` |
-| `RIGHT(text, n)` | Gets the right-most `n` characters. | `'Notebook'` → `'book'` |
-| `CONCAT(str1, str2, ...)` | Joins two or more strings together. | `'Sheryians'` + `'AI'` → `'SheryiansAI'` |
-| `TRIM(text)` | Removes spaces from the beginning and end of a string. | `' Hello '` → `'Hello'` |
-| `REPLACE(text, from, to)` | Replaces part of a string with another string. | `'USB-C'` → `'USB'` |
+| Function                         | Description                                | Example                                     |
+| -------------------------------- | ------------------------------------------ | ------------------------------------------- |
+| `LOWER(text)`                    | Converts text to lowercase.                | `'LAPTOP'` → `'laptop'`                     |
+| `UPPER(text)`                    | Converts text to uppercase.                | `'mouse'` → `'MOUSE'`                       |
+| `LENGTH(text)`                   | Returns the number of characters.          | `'Laptop'` → `6`                            |
+| `SUBSTRING(text, start, length)` | Extracts part of a string.                 | `'Notebook'` → `'Note'`                     |
+| `LEFT(text, n)`                  | Gets the left-most `n` characters.         | `'Notebook'` → `'Note'`                     |
+| `RIGHT(text, n)`                 | Gets the right-most `n` characters.        | `'Notebook'` → `'book'`                     |
+| `CONCAT(str1, str2, ...)`        | Joins multiple strings.                    | `'Hello'` + `' World'` → `'Hello World'`    |
+| `CONCAT_WS(separator, ...)`      | Joins strings using a separator.           | `CONCAT_WS(' - ', 'Laptop', 'Electronics')` |
+| `TRIM(text)`                     | Removes spaces from the beginning and end. | `' Hello '` → `'Hello'`                     |
+| `REPLACE(text, from, to)`        | Replaces matching text.                    | `'USB-C'` → `'USB'`                         |
 
-## Examples
+---
 
-### 1. LOWER()
+## 1. LOWER()
 
 Converts text to lowercase.
 
@@ -843,7 +713,9 @@ Example:
 'LAPTOP' → 'laptop'
 ```
 
-### 2. UPPER()
+---
+
+## 2. UPPER()
 
 Converts text to uppercase.
 
@@ -858,12 +730,16 @@ Example:
 'mouse' → 'MOUSE'
 ```
 
-### 3. LENGTH()
+---
+
+## 3. LENGTH()
 
 Returns the number of characters in a string.
 
 ```sql
-SELECT name, LENGTH(name) AS name_length
+SELECT
+    name,
+    LENGTH(name) AS name_length
 FROM products;
 ```
 
@@ -873,7 +749,9 @@ Example:
 'Laptop' → 6
 ```
 
-### 4. SUBSTRING()
+---
+
+## 4. SUBSTRING()
 
 Extracts a specific part of a string.
 
@@ -888,7 +766,11 @@ Example:
 'Notebook' → 'Note'
 ```
 
-### 5. LEFT()
+> PostgreSQL string positions start at `1`.
+
+---
+
+## 5. LEFT()
 
 Returns the first `n` characters from the left.
 
@@ -903,7 +785,9 @@ Example:
 'Notebook' → 'Note'
 ```
 
-### 6. RIGHT()
+---
+
+## 6. RIGHT()
 
 Returns the last `n` characters from the right.
 
@@ -918,7 +802,9 @@ Example:
 'Notebook' → 'book'
 ```
 
-### 7. CONCAT()
+---
+
+## 7. CONCAT()
 
 Combines multiple strings.
 
@@ -934,7 +820,30 @@ Example:
 → 'Laptop - Electronics'
 ```
 
-### 8. TRIM()
+`CONCAT()` treats `NULL` arguments as empty strings.
+
+---
+
+## 8. CONCAT_WS()
+
+Combines strings using a separator.
+
+```sql
+SELECT CONCAT_WS(' - ', name, category) AS product_info
+FROM products;
+```
+
+Example:
+
+```text
+Laptop - Electronics
+```
+
+`WS` means **With Separator**.
+
+---
+
+## 9. TRIM()
 
 Removes whitespace from the beginning and end of a string.
 
@@ -949,9 +858,13 @@ Example:
 '  Laptop  ' → 'Laptop'
 ```
 
-### 9. REPLACE()
+> `TRIM()` does not remove spaces from the middle of a string.
 
-Replaces every occurrence of one substring with another.
+---
+
+## 10. REPLACE()
+
+Replaces matching occurrences of one substring with another.
 
 ```sql
 SELECT REPLACE(name, 'Phone', 'Mobile')
@@ -964,29 +877,20 @@ Example:
 'Smart Phone' → 'Smart Mobile'
 ```
 
-## Important Notes
+---
 
-- String functions are commonly used with `SELECT`, `WHERE`, `ORDER BY`, and `GROUP BY`.
-- `LOWER()` and `UPPER()` are useful when you want consistent text formatting.
-- `LENGTH()` counts the number of characters in the string.
-- `SUBSTRING()` uses a starting position and length. PostgreSQL string positions start at `1`.
-- `LEFT()` and `RIGHT()` are convenient when you only need characters from one side of a string.
-- `CONCAT()` is useful for combining columns and text. It is generally safer than using the `||` operator when `NULL` values may be present.
-- `TRIM()` removes whitespace at the beginning and end, not spaces in the middle of a string.
-- `REPLACE()` replaces matching occurrences throughout the string.
-- PostgreSQL also provides `CONCAT_WS()` for concatenating values with a separator.
+# String Function Examples
 
-### Useful PostgreSQL Examples
-
-Convert categories to uppercase and return only unique values:
+## Convert Categories to Uppercase
 
 ```sql
-SELECT DISTINCT UPPER(category) AS category
+SELECT DISTINCT
+    UPPER(category) AS category_name
 FROM products
-ORDER BY category DESC;
+ORDER BY category_name DESC;
 ```
 
-Search for products whose names contain a word after converting to lowercase:
+## Search Names Case-Insensitively
 
 ```sql
 SELECT *
@@ -994,14 +898,29 @@ FROM products
 WHERE LOWER(name) LIKE '%phone%';
 ```
 
-Create a formatted product label:
+Or, using PostgreSQL's `ILIKE`:
 
 ```sql
-SELECT CONCAT(UPPER(category), ': ', name) AS product_label
+SELECT *
+FROM products
+WHERE name ILIKE '%phone%';
+```
+
+## Create a Formatted Product Label
+
+```sql
+SELECT
+    CONCAT(UPPER(category), ': ', name) AS product_label
 FROM products;
 ```
 
-Remove unwanted spaces before comparing text:
+Example:
+
+```text
+ELECTRONICS: Laptop
+```
+
+## Remove Unwanted Spaces
 
 ```sql
 SELECT *
@@ -1011,3 +930,39 @@ WHERE TRIM(name) = 'Laptop';
 
 ---
 
+# Important String Function Notes
+
+* `LOWER()` converts text to lowercase.
+* `UPPER()` converts text to uppercase.
+* `LENGTH()` returns the number of characters.
+* `SUBSTRING()` extracts part of a string.
+* PostgreSQL string positions start at `1`.
+* `LEFT()` gets characters from the beginning.
+* `RIGHT()` gets characters from the end.
+* `CONCAT()` combines multiple values.
+* `CONCAT_WS()` combines values using a separator.
+* `TRIM()` removes leading and trailing whitespace.
+* `REPLACE()` replaces matching text.
+* `LIKE` performs pattern matching.
+* `ILIKE` performs case-insensitive pattern matching in PostgreSQL.
+* `IS NULL` and `IS NOT NULL` should be used when checking for `NULL`.
+* String functions can be used with `SELECT`, `WHERE`, `ORDER BY`, and other SQL clauses.
+
+---
+
+# Quick String Function Reference
+
+| Function      | Purpose                            |
+| ------------- | ---------------------------------- |
+| `LOWER()`     | Convert text to lowercase          |
+| `UPPER()`     | Convert text to uppercase          |
+| `LENGTH()`    | Count characters                   |
+| `SUBSTRING()` | Extract part of a string           |
+| `LEFT()`      | Get characters from the left       |
+| `RIGHT()`     | Get characters from the right      |
+| `CONCAT()`    | Combine strings                    |
+| `CONCAT_WS()` | Combine strings with a separator   |
+| `TRIM()`      | Remove leading/trailing whitespace |
+| `REPLACE()`   | Replace matching text              |
+
+---
