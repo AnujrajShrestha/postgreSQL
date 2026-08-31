@@ -966,3 +966,194 @@ WHERE TRIM(name) = 'Laptop';
 | `REPLACE()`   | Replace matching text              |
 
 ---
+
+---
+
+
+# ALTER TABLE Operations
+
+`ALTER TABLE` is a **DDL command** used to modify the structure of an existing table.
+
+It can be used to add, remove, rename, or modify columns, add/remove constraints, and rename tables.
+
+---
+
+## 1. Add a Column
+
+Use `ADD COLUMN` to add a new column to an existing table.
+
+```sql
+ALTER TABLE students
+ADD COLUMN email VARCHAR(100) DEFAULT 'not provided';
+```
+
+* Adds a new `email` column to the `students` table.
+* `DEFAULT 'not provided'` gives the column a default value.
+
+---
+
+## 2. Drop a Column
+
+Use `DROP COLUMN` to permanently remove a column from a table.
+
+```sql
+ALTER TABLE students
+DROP COLUMN email;
+```
+
+> **Important:** Dropping a column also removes the data stored in that column.
+
+---
+
+## 3. Rename a Column
+
+Use `RENAME COLUMN` to change the name of an existing column.
+
+```sql
+ALTER TABLE students
+RENAME COLUMN name TO full_name;
+```
+
+* Changes `name` to `full_name`.
+* The data inside the column is preserved.
+
+---
+
+## 4. Change the Data Type of a Column
+
+Use `ALTER COLUMN ... TYPE` to change a column's data type.
+
+```sql
+ALTER TABLE students
+ALTER COLUMN age TYPE SMALLINT;
+```
+
+> **Note:** The existing data must be compatible with the new data type. PostgreSQL may require a `USING` expression for some conversions.
+
+---
+
+## 5. Set a Default Value
+
+Use `SET DEFAULT` to define a default value for a column.
+
+```sql
+ALTER TABLE students
+ALTER COLUMN age SET DEFAULT 18;
+```
+
+If a new row is inserted without specifying `age`, PostgreSQL uses `18`.
+
+```sql
+INSERT INTO students (id, full_name, class)
+VALUES (3, 'Ram', 12);
+```
+
+---
+
+## 6. Remove a Default Value
+
+Use `DROP DEFAULT` to remove the default value from a column.
+
+```sql
+ALTER TABLE students
+ALTER COLUMN age DROP DEFAULT;
+```
+
+This does **not** delete existing values. It only removes the default used for future inserts.
+
+---
+
+## 7. Add a Constraint
+
+Use `ADD CONSTRAINT` to add a rule to an existing table.
+
+```sql
+ALTER TABLE students
+ADD CONSTRAINT age_check CHECK (age >= 0);
+```
+
+* `age_check` is the name of the constraint.
+* `CHECK (age >= 0)` ensures that `age` cannot be negative.
+
+---
+
+## 8. Drop a Constraint
+
+Use `DROP CONSTRAINT` to remove an existing constraint.
+
+```sql
+ALTER TABLE students
+DROP CONSTRAINT age_check;
+```
+
+The constraint must be identified by its name.
+
+---
+
+## 9. Rename a Table
+
+Use `RENAME TO` to change the name of an existing table.
+
+```sql
+ALTER TABLE students
+RENAME TO school_students;
+```
+
+The table is now named `school_students`.
+
+```sql
+SELECT *
+FROM school_students;
+```
+
+---
+
+# ALTER TABLE Syntax Reference
+
+| Operation | Syntax |
+| --------- | ------ |
+| Add column | `ALTER TABLE table_name ADD COLUMN column_name data_type;` |
+| Drop column | `ALTER TABLE table_name DROP COLUMN column_name;` |
+| Rename column | `ALTER TABLE table_name RENAME COLUMN old_name TO new_name;` |
+| Change data type | `ALTER TABLE table_name ALTER COLUMN column_name TYPE data_type;` |
+| Set default | `ALTER TABLE table_name ALTER COLUMN column_name SET DEFAULT value;` |
+| Drop default | `ALTER TABLE table_name ALTER COLUMN column_name DROP DEFAULT;` |
+| Add constraint | `ALTER TABLE table_name ADD CONSTRAINT constraint_name condition;` |
+| Drop constraint | `ALTER TABLE table_name DROP CONSTRAINT constraint_name;` |
+| Rename table | `ALTER TABLE table_name RENAME TO new_table_name;` |
+
+---
+
+# Important ALTER TABLE Notes
+
+* `ALTER TABLE` modifies the **structure/schema** of an existing table.
+* `ALTER TABLE` is a **DDL command**.
+* `ADD COLUMN` adds a new column.
+* `DROP COLUMN` permanently removes a column and its stored data.
+* `RENAME COLUMN` changes a column's name without removing its data.
+* `ALTER COLUMN ... TYPE` changes a column's data type.
+* `SET DEFAULT` affects future inserts; it does not automatically change existing rows.
+* `DROP DEFAULT` removes the default value but does not remove existing data.
+* `ADD CONSTRAINT` adds a data-integrity rule.
+* `DROP CONSTRAINT` removes a previously defined constraint.
+* `RENAME TO` changes the table name.
+* Use meaningful names for constraints so they are easy to identify and remove later.
+
+---
+
+# Quick ALTER TABLE Reference
+
+| Command | Purpose |
+| ------- | ------- |
+| `ADD COLUMN` | Add a new column |
+| `DROP COLUMN` | Remove a column |
+| `RENAME COLUMN` | Rename a column |
+| `ALTER COLUMN ... TYPE` | Change a column's data type |
+| `SET DEFAULT` | Set a default value |
+| `DROP DEFAULT` | Remove a default value |
+| `ADD CONSTRAINT` | Add a constraint |
+| `DROP CONSTRAINT` | Remove a constraint |
+| `RENAME TO` | Rename a table |
+
+---
+
