@@ -1157,3 +1157,316 @@ FROM school_students;
 
 ---
 
+# CASE Expression
+
+`CASE` is a conditional expression in PostgreSQL. It works similarly to an **if-else** or **switch** statement in programming languages.
+
+It allows you to return different values based on different conditions within a single SQL query.
+
+## Uses of CASE
+
+1. Create custom columns on the fly.
+2. Categorize data based on specific conditions.
+3. Handle `NULL` or missing values gracefully.
+4. Simplify conditional logic inside `SELECT`, `UPDATE`, and other SQL statements.
+
+---
+
+## CASE Syntax
+
+```sql
+SELECT column1,
+
+    CASE
+        WHEN condition1 THEN result1
+        WHEN condition2 THEN result2
+        ELSE default_result
+    END AS new_column_name
+
+FROM table_name;
+```
+
+### How it works
+
+* `WHEN` → specifies a condition.
+* `THEN` → specifies the value returned when the condition is true.
+* `ELSE` → specifies the value returned when none of the conditions are true.
+* `END` → marks the end of the `CASE` expression.
+* `AS` → gives the calculated column a name.
+
+> **Note:** The `ELSE` clause is optional. If it is omitted and no condition matches, PostgreSQL returns `NULL`.
+
+---
+
+## 1. Categorize Products by Price
+
+Suppose:
+
+* Price above `1000` → **Expensive**
+* Price between `500` and `1000` → **Moderate**
+* Price below `500` → **Cheap**
+
+```sql
+SELECT
+    name,
+    price,
+
+    CASE
+        WHEN price > 1000 THEN 'Expensive'
+        WHEN price BETWEEN 500 AND 1000 THEN 'Moderate'
+        ELSE 'Cheap'
+    END AS price_tag
+
+FROM products;
+```
+
+### Example Result
+
+| name     | price | price_tag |
+| -------- | ----: | --------- |
+| Laptop   |  1500 | Expensive |
+| Keyboard |   750 | Moderate  |
+| Mouse    |   300 | Cheap     |
+
+> **Note:** `BETWEEN 500 AND 1000` includes both `500` and `1000`.
+
+---
+
+## 2. Store CASE Result in a Column
+
+You can also use `CASE` inside an `UPDATE` statement to permanently store the calculated result.
+
+### Add the Column
+
+```sql
+ALTER TABLE products
+ADD COLUMN price_tag VARCHAR(10);
+```
+
+### Update the Column
+
+```sql
+UPDATE products
+SET price_tag =
+    CASE
+        WHEN price > 1000 THEN 'Expensive'
+        WHEN price BETWEEN 500 AND 1000 THEN 'Moderate'
+        ELSE 'Cheap'
+    END;
+```
+
+Now the `price_tag` value is stored in the table.
+
+```sql
+SELECT name, price, price_tag
+FROM products;
+```
+
+> **Important:** A `CASE` expression inside a `SELECT` creates a result dynamically. Using it inside `UPDATE` stores the resulting value in the table.
+
+---
+
+## 3. Check Product Availability
+
+`CASE` can be used with a `BOOLEAN` column to create a more readable status.
+
+```sql
+SELECT
+    name,
+
+    CASE
+        WHEN is_available THEN 'In Stock'
+        ELSE 'Out Of Stock'
+    END AS availability_status
+
+FROM products;
+```
+
+If `is_available` is `TRUE`, the result is:
+
+```text
+In Stock
+```
+
+If `is_available` is `FALSE`, the result is:
+
+```text
+Out Of Stock
+```
+
+---
+
+## 4. Categorize Products by Stock Quantity
+
+Suppose:
+
+* Quantity greater than `100` → **High Stock**
+* Quantity between `40` and `100` → **Medium Stock**
+* Otherwise → **Low Stock**
+
+```sql
+SELECT
+    name,
+    quantity,
+
+    CASE
+        WHEN quantity > 100 THEN 'High Stock'
+        WHEN quantity BETWEEN 40 AND 100 THEN 'Medium Stock'
+        ELSE 'Low Stock'
+    END AS stock_level
+
+FROM products;
+```
+
+### Example Result
+
+| name     | quantity | stock_level  |
+| -------- | -------: | ------------ |
+| Laptop   |      150 | High Stock   |
+| Keyboard |       75 | Medium Stock |
+| Mouse    |       20 | Low Stock    |
+
+---
+
+## CASE with NULL Values
+
+`CASE` can also be used to handle `NULL` values.
+
+```sql
+SELECT
+    name,
+
+    CASE
+        WHEN price IS NULL THEN 'Price Not Available'
+        ELSE 'Price Available'
+    END AS price_status
+
+FROM products;
+```
+
+You can also use `COALESCE()` when you simply want to replace a `NULL` value:
+
+```sql
+SELECT
+    name,
+    COALESCE(price::TEXT, 'Price Not Available') AS price
+FROM products;
+```
+
+---
+
+## CASE with ORDER BY
+
+`CASE` can be used to create a custom sorting order.
+
+For example, sort products in this order:
+
+1. High Stock
+2. Medium Stock
+3. Low Stock
+
+```sql
+SELECT
+    name,
+    quantity,
+
+    CASE
+        WHEN quantity > 100 THEN 'High Stock'
+        WHEN quantity BETWEEN 40 AND 100 THEN 'Medium Stock'
+        ELSE 'Low Stock'
+    END AS stock_level
+
+FROM products
+
+ORDER BY
+    CASE
+        WHEN quantity > 100 THEN 1
+        WHEN quantity BETWEEN 40 AND 100 THEN 2
+        ELSE 3
+    END;
+```
+
+This is useful when normal alphabetical or numerical sorting is not what you want.
+
+---
+
+## CASE with Aggregate Functions
+
+`CASE` can also be combined with aggregate functions such as `COUNT()` and `SUM()`.
+
+### Count Available Products
+
+```sql
+SELECT
+    COUNT(
+        CASE
+            WHEN is_available THEN 1
+        END
+    ) AS available_products
+
+FROM products;
+```
+
+### Count Expensive Products
+
+```sql
+SELECT
+    COUNT(
+        CASE
+            WHEN price > 1000 THEN 1
+        END
+    ) AS expensive_products
+
+FROM products;
+```
+
+---
+
+# Important CASE Notes
+
+* `CASE` is a **conditional expression**, not a separate SQL statement.
+* It works similarly to `if-else` or `switch` logic.
+* `WHEN` defines a condition.
+* `THEN` defines the result when the condition is true.
+* `ELSE` provides a default result.
+* `END` marks the end of the `CASE` expression.
+* `AS` can be used to give the calculated result a column alias.
+* Conditions are evaluated from **top to bottom**.
+* Once a `WHEN` condition is true, PostgreSQL returns its corresponding `THEN` result.
+* `ELSE` is optional.
+* If no condition matches and there is no `ELSE`, the result is `NULL`.
+* `CASE` can be used in `SELECT`, `UPDATE`, `ORDER BY`, aggregate expressions, and other SQL expressions.
+* `CASE` is useful for categorizing and transforming data without changing the original table structure.
+* `CASE` can work with numbers, strings, booleans, dates, and other PostgreSQL data types.
+* `BETWEEN` includes both boundary values.
+
+---
+
+# Quick CASE Reference
+
+| Syntax | Purpose                                     |
+| ------ | ------------------------------------------- |
+| `CASE` | Starts the conditional expression           |
+| `WHEN` | Defines a condition                         |
+| `THEN` | Returns a result when the condition is true |
+| `ELSE` | Returns a default result                    |
+| `END`  | Ends the `CASE` expression                  |
+| `AS`   | Gives the calculated result an alias        |
+
+### Basic Example
+
+```sql
+SELECT
+    name,
+    price,
+
+    CASE
+        WHEN price > 1000 THEN 'Expensive'
+        WHEN price >= 500 THEN 'Moderate'
+        ELSE 'Cheap'
+    END AS price_category
+
+FROM products;
+```
+
+> **Tip:** Put the most specific conditions first because PostgreSQL evaluates `WHEN` conditions from top to bottom.
