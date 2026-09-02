@@ -1470,3 +1470,288 @@ FROM products;
 ```
 
 > **Tip:** Put the most specific conditions first because PostgreSQL evaluates `WHEN` conditions from top to bottom.
+---
+
+# PostgreSQL Relationships
+
+In a **relational database**, data is stored across multiple tables, and these tables are connected through **relationships**.
+
+Instead of repeating the same data again and again in one huge table, we split the data into smaller, meaningful tables and connect them using **keys** such as **Primary Keys** and **Foreign Keys**.
+
+## Types of Relationships
+
+There are three common types of relationships in a relational database:
+
+1. **One-to-One (1:1)**
+2. **One-to-Many (1:N)**
+3. **Many-to-Many (M:N)**
+
+---
+
+# 1. One-to-One (1:1)
+
+In a **One-to-One relationship**, one record in Table A is related to only one record in Table B, and vice versa.
+
+### Example: Students and Student Profiles
+
+| `students`  | `student_profiles`    |
+| ----------- | --------------------- |
+| student_id  | student_id            |
+| 1 — Anuj    | 1 — Anuj's Profile    |
+| 2 — Aastha  | 2 — Aastha's Profile  |
+| 3 — Sandesh | 3 — Sandesh's Profile |
+
+One student has one profile, and one profile belongs to one student.
+
+### PostgreSQL Example
+
+```sql
+CREATE TABLE students (
+    student_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE student_profiles (
+    student_id INT PRIMARY KEY,
+    address TEXT,
+    age SMALLINT,
+    phone VARCHAR(15),
+
+    FOREIGN KEY (student_id)
+        REFERENCES students(student_id)
+);
+```
+
+Here, `student_id` in `student_profiles` is both:
+
+* **PRIMARY KEY** → ensures each student has only one profile.
+* **FOREIGN KEY** → connects the profile to the `students` table.
+
+### Relationship
+
+```text
+students
+   │
+   │ 1
+   │
+   │
+   │ 1
+   ▼
+student_profiles
+```
+
+---
+
+# 2. One-to-Many (1:N)
+
+In a **One-to-Many relationship**, one record in Table A can be related to many records in Table B.
+
+However, each record in Table B is usually related to only one record in Table A.
+
+### Example: Departments and Employees
+
+| `departments` | `employees` |
+| ------------- | ----------- |
+| department_id | employee_id |
+| 1 — IT        | 1 — Anuj    |
+| 2 — HR        | 2 — Aastha  |
+|               | 3 — Sandesh |
+
+One department can have **many employees**, but an employee belongs to one department.
+
+### PostgreSQL Example
+
+```sql
+CREATE TABLE departments (
+    department_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE employees (
+    employee_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    department_id INT,
+
+    FOREIGN KEY (department_id)
+        REFERENCES departments(department_id)
+);
+```
+
+Here, `department_id` is stored in the `employees` table because `employees` is the **many-side** of the relationship.
+
+### Relationship
+
+```text
+departments
+     │
+     │ 1
+     │
+     │
+     │ N
+     ▼
+employees
+```
+
+---
+
+# 3. Many-to-Many (M:N)
+
+In a **Many-to-Many relationship**, many records in Table A can be related to many records in Table B.
+
+### Example: Students and Courses
+
+| `students`  | `courses`      |
+| ----------- | -------------- |
+| 1 — Anuj    | 1 — PostgreSQL |
+| 2 — Aastha  | 2 — Python     |
+| 3 — Sandesh | 3 — JavaScript |
+
+A student can enroll in **many courses**, and a course can have **many students**.
+
+A direct foreign key is not enough to represent this relationship.
+
+Therefore, we create a **Junction Table** (also called a **Bridge Table** or **Associative Table**).
+
+### Junction Table
+
+| `student_courses` |           |
+| ----------------- | --------- |
+| student_id        | course_id |
+| 1                 | 1         |
+| 1                 | 2         |
+| 2                 | 1         |
+| 3                 | 2         |
+
+### PostgreSQL Example
+
+```sql
+CREATE TABLE students (
+    student_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE courses (
+    course_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE student_courses (
+    student_id INT,
+    course_id INT,
+
+    PRIMARY KEY (student_id, course_id),
+
+    FOREIGN KEY (student_id)
+        REFERENCES students(student_id),
+
+    FOREIGN KEY (course_id)
+        REFERENCES courses(course_id)
+);
+```
+
+The composite primary key:
+
+```sql
+PRIMARY KEY (student_id, course_id)
+```
+
+prevents the same student from being assigned to the same course more than once.
+
+### Relationship
+
+```text
+students              courses
+    │                    │
+    │ 1              1  │
+    │                    │
+    └── student_courses ─┘
+          Junction Table
+```
+
+A many-to-many relationship is implemented using **two one-to-many relationships**:
+
+```text
+students
+   │
+   │ 1 : N
+   ▼
+student_courses
+   ▲
+   │ N : 1
+   │
+courses
+```
+
+---
+
+# Quick Comparison
+
+| Relationship           | Meaning         | Example                | Implementation               |
+| ---------------------- | --------------- | ---------------------- | ---------------------------- |
+| **One-to-One (1:1)**   | One A → One B   | Student → Profile      | Foreign Key + Primary Key    |
+| **One-to-Many (1:N)**  | One A → Many B  | Department → Employees | Foreign Key on the many-side |
+| **Many-to-Many (M:N)** | Many A ↔ Many B | Students ↔ Courses     | Junction Table               |
+
+---
+
+# Primary Key vs Foreign Key
+
+### Primary Key
+
+A **Primary Key (PK)** uniquely identifies each row in a table.
+
+```sql
+student_id INT PRIMARY KEY
+```
+
+Properties:
+
+* Must be unique.
+* Cannot contain `NULL`.
+* Identifies a specific record.
+
+### Foreign Key
+
+A **Foreign Key (FK)** creates a connection between two tables.
+
+```sql
+FOREIGN KEY (student_id)
+REFERENCES students(student_id)
+```
+
+It ensures that the value exists in the referenced table.
+
+---
+
+# Relationship Summary
+
+```text
+1. One-to-One
+
+Student ───────── Profile
+   1                  1
+
+
+2. One-to-Many
+
+Department ───────< Employees
+     1                  N
+
+
+3. Many-to-Many
+
+Students >───────< Courses
+             │
+             ▼
+      Junction Table
+```
+
+## Key Points
+
+* **Primary Key** uniquely identifies a record.
+* **Foreign Key** connects records between tables.
+* **1:1** → One record is related to one record.
+* **1:N** → One record is related to many records.
+* **M:N** → Many records are related to many records.
+* **Many-to-Many** relationships require a **Junction Table**.
+* Splitting data into related tables helps reduce **data duplication** and improves **database organization**.
