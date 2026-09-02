@@ -1755,3 +1755,47 @@ Students >───────< Courses
 * **M:N** → Many records are related to many records.
 * **Many-to-Many** relationships require a **Junction Table**.
 * Splitting data into related tables helps reduce **data duplication** and improves **database organization**.
+---
+# PostgreSQL --- JOINs
+
+## Joins
+
+Joins are used to combine rows from two or more tables based on a
+related column, usually a **primary key** in one table and a **foreign
+key** in another.
+
+Think of joins as a **bridge between two tables** that lets you query
+them together.
+
+### Why do we use joins?
+
+1.  To merge related data spread across multiple tables.
+2.  To write meaningful real-world queries like:
+    -   Which student scored highest in Science?
+    -   List all students even if they haven't appeared for any exam.
+
+### Types of Joins
+
+  -----------------------------------------------------------------------
+  Join Type                           Description
+  ----------------------------------- -----------------------------------
+  **INNER JOIN**                      Returns **only matching rows** in
+                                      both tables.
+
+  **LEFT JOIN**                       Returns **all rows from the left
+                                      table**, even if there's no match
+                                      in the right table.
+
+  **RIGHT JOIN**                      Returns **all rows from the right
+                                      table**, even if there's no match
+                                      in the left table.
+
+  **FULL JOIN**                       Returns **all rows from both
+                                      tables**, and fills `NULL` for
+                                      missing matches.
+
+  **CROSS JOIN**                      Returns the **Cartesian product**
+                                      --- every possible combination of
+                                      rows.
+  -----------------------------------------------------------------------
+
