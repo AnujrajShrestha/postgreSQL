@@ -1776,26 +1776,24 @@ them together.
 
 ### Types of Joins
 
-  -----------------------------------------------------------------------
-  Join Type                           Description
-  ----------------------------------- -----------------------------------
-  **INNER JOIN**                      Returns **only matching rows** in
-                                      both tables.
+| Join Type | Description |
+| --------- | ----------- |
+| **INNER JOIN** | Returns **only matching rows** in both tables. |
+| **LEFT JOIN** | Returns **all rows from the left table**, even if there's no match in the right table. |
+| **RIGHT JOIN** | Returns **all rows from the right table**, even if there's no match in the left table. |
+| **FULL JOIN** | Returns **all rows from both tables**, and fills `NULL` for missing matches. |
+| **CROSS JOIN** | Returns the **Cartesian product** — every possible combination of rows. |
 
-  **LEFT JOIN**                       Returns **all rows from the left
-                                      table**, even if there's no match
-                                      in the right table.
+---
 
-  **RIGHT JOIN**                      Returns **all rows from the right
-                                      table**, even if there's no match
-                                      in the left table.
+# Views
 
-  **FULL JOIN**                       Returns **all rows from both
-                                      tables**, and fills `NULL` for
-                                      missing matches.
+A **view** is a virtual table based on a SQL query. It does not store actual data, but shows it when accessed — just like a saved query.
 
-  **CROSS JOIN**                      Returns the **Cartesian product**
-                                      --- every possible combination of
-                                      rows.
-  -----------------------------------------------------------------------
+## Why is it used?
 
+1. **Simplify complex queries:** Save a long query and access it like a table.
+2. **Reuse logic:** No need to rewrite joins or filters again and again.
+3. **Security:** Expose only selected columns instead of giving full access to the table.
+4. **Abstraction:** Hide table complexity for frontend/dashboard users.
+5. **Maintainability:** If logic changes, update the view and the changes reflect everywhere.
