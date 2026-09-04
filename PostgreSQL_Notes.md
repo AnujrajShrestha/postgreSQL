@@ -1797,3 +1797,22 @@ A **view** is a virtual table based on a SQL query. It does not store actual dat
 3. **Security:** Expose only selected columns instead of giving full access to the table.
 4. **Abstraction:** Hide table complexity for frontend/dashboard users.
 5. **Maintainability:** If logic changes, update the view and the changes reflect everywhere.
+
+
+# Procedures
+
+A procedures is a block of SQL code that performs a series of operations like inserting, updating, deleting or selecting data -- and is stored in the database.
+
+Think of it like function in programming -- once defined you can call it again and again without rewriting the logic.
+
+Benefits:
+
+1. **Reusability:** Write once, use many times.
+
+2. **Security:** Logic is stored in DB, no need to give direct access to all tables.
+
+3. **Faster execution:** Compiled and stored on the DB server.
+
+4. **Encapsulation:** Hide complex logic in one callable block.
+
+5. **Multi-step operations:** Performs multiple queries like inserting, updating, log creation in one go.
